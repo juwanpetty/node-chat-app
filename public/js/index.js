@@ -12,7 +12,7 @@ socket.on('disconnect', () => {
 socket.on('newMessage', message => {
   console.log('New message...', message);
 
-  let li = document.createElement("LI");
+  let li = document.createElement('LI');
   li.textContent = `${message.from}: ${message.text}`;
 
   const ol = document.querySelector('#messages');
@@ -20,8 +20,8 @@ socket.on('newMessage', message => {
 });
 
 socket.on('newLocationMessage', message => {
-  let li = document.createElement("LI");
-  let a = document.createElement("A");
+  let li = document.createElement('LI');
+  let a = document.createElement('A');
 
   a.textContent = 'My current location';
   a.setAttribute('target', '_blank');
@@ -40,12 +40,16 @@ const form = document.querySelector('.message-form');
 form.addEventListener('submit', event => {
   event.preventDefault();
 
-  socket.emit('createMessage', {
-    from: 'User',
-    text: event.target[0].value.trim()
-  }, () => {
-    event.target[0].value = '';
-  });
+  socket.emit(
+    'createMessage',
+    {
+      from: 'User',
+      text: event.target[0].value.trim(),
+    },
+    () => {
+      event.target[0].value = '';
+    },
+  );
 });
 
 const locationButton = document.querySelector('.send-location');
@@ -54,12 +58,23 @@ locationButton.addEventListener('click', () => {
     return alert('Geolocation not supported by your browser.');
   }
 
-  navigator.geolocation.getCurrentPosition(position => {
-    socket.emit('createLocationMessage', {
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude
-    });
-  }, () => {
-    alert('Unable to get location.');
-  });
+  locationButton.setAttribute('disabled', true);
+  locationButton.textContent('Sending location...');
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      socket.emit('createLocationMessage', {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+
+      locationButton.removeAttribute('disabled');
+      locationButton.textContent('Send location');
+    },
+    () => {
+      alert('Unable to get location.');
+      locationButton.removeAttribute('disabled');
+      locationButton.textContent('Send location');
+    },
+  );
 });

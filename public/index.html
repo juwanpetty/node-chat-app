@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Node Chat App</title>
 
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body class="chat">
     <div class="chat__sidebar">
@@ -15,17 +15,22 @@
     </div>
 
     <div class="chat__main">
-        <ol id="messages" class="chat__messages"></ol>
+      <ol id="messages" class="chat__messages"></ol>
 
-        <div class="chat__footer">
-            <form action="" class="message-form">
-                <input type="text" name="message" placeholder="Message" autofocus autocomplete="off">
-                <button>Send</button>
-              </form>
-          
-              <button class="send-location">Send Location</button>
-        </div>
-        
+      <div class="chat__footer">
+        <form action="" class="message-form">
+          <input
+            type="text"
+            name="message"
+            placeholder="Message"
+            autofocus
+            autocomplete="off"
+          />
+          <button>Send</button>
+        </form>
+
+        <button class="send-location">Send location</button>
+      </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
