@@ -17,14 +17,6 @@ socket.on('newMessage', message => {
 
   const ol = document.querySelector('#messages');
   ol.appendChild(li);
-
-  if (!tabIsActive && isNotificationsEnabled) {
-    const title = `Message from ${message.from}`
-    const notificationOptions = {
-      body: message.text
-    };
-    const notification = new Notification(title, notificationOptions);
-  }
 });
 
 socket.on('newLocationMessage', message => {
@@ -70,32 +62,4 @@ locationButton.addEventListener('click', () => {
   }, () => {
     alert('Unable to get location.');
   });
-});
-
-const isNotificationsEnabled = () => {
-  if (!("Notification" in window)) {
-    return false;
-  }
-
-  if (Notification.permission === "granted") {
-    // If it's okay let's create a notification
-    return true;
-  }
-
-  if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(function (permission) {
-      // If the user accepts, let's create a notification
-      if (permission === "granted") {
-        return true;
-      }
-    });
-  }
-};
-
-window.addEventListener('focus', () => { 
-  tabIsActive = true;
-});
-
-window.addEventListener('blur', () => { 
-  tabIsActive = false;
 });
