@@ -10,23 +10,25 @@ socket.on('disconnect', () => {
 });
 
 socket.on('newMessage', message => {
-  console.log('New message...', message);
+  const formattedTime = moment(message.createdAt).format('h:mm a');
 
   let li = document.createElement('LI');
-  li.textContent = `${message.from}: ${message.text}`;
+  li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
 
   const ol = document.querySelector('#messages');
   ol.appendChild(li);
 });
 
 socket.on('newLocationMessage', message => {
+  const formattedTime = moment(message.createdAt).format('h:mm a');
+
   let li = document.createElement('LI');
   let a = document.createElement('A');
 
   a.textContent = 'My current location';
   a.setAttribute('target', '_blank');
 
-  li.textContent = `${message.from}: `;
+  li.textContent = `${message.from} ${formattedTime}: `;
   a.setAttribute('href', message.url);
 
   li.appendChild(a);
@@ -59,7 +61,7 @@ locationButton.addEventListener('click', () => {
   }
 
   locationButton.setAttribute('disabled', true);
-  locationButton.textContent('Sending location...');
+  locationButton.textContent = 'Sending location...';
 
   navigator.geolocation.getCurrentPosition(
     position => {
@@ -69,12 +71,12 @@ locationButton.addEventListener('click', () => {
       });
 
       locationButton.removeAttribute('disabled');
-      locationButton.textContent('Send location');
+      locationButton.textContent = 'Send location';
     },
     () => {
       alert('Unable to get location.');
       locationButton.removeAttribute('disabled');
-      locationButton.textContent('Send location');
+      locationButton.textContent = 'Send location';
     },
   );
 });
