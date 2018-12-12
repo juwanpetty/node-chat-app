@@ -1,4 +1,5 @@
 const socket = io();
+let isWindowInFocus = true;
 
 const scrollToBottom = () => {
   // Selectors
@@ -25,7 +26,6 @@ socket.on('connect', () => {
       alert(error);
       window.location.href = '/';
     } else {
-      console.log('No error.');
     }
   });
 });
@@ -35,8 +35,6 @@ socket.on('disconnect', () => {
 });
 
 socket.on('updateUserList', users => {
-  console.log('Users list', users);
-
   const ol = $('<ol></ol>');
   users.forEach(user => {
     ol.append($('<li></li>').text(user));
@@ -57,6 +55,10 @@ socket.on('newMessage', message => {
 
   $('#messages').append(html);
   scrollToBottom();
+
+  if (!isWindowInFocus) {
+    sendNotification(message);
+  }
 });
 
 socket.on('newLocationMessage', message => {
@@ -70,7 +72,12 @@ socket.on('newLocationMessage', message => {
   });
 
   $('#messages').append(html);
+  
   scrollToBottom();
+
+  if (!isWindowInFocus) {
+    sendNotification(message);
+  }
 });
 
 const form = document.querySelector('.message-form');
@@ -116,3 +123,39 @@ locationButton.addEventListener('click', () => {
     },
   );
 });
+
+document.addEventListener('blur', () => {
+  isWindowInFocus = false;
+});
+
+document.addEventListener('focus', () => {
+  isWindowInFocus = true;
+});
+
+const sendNotification = message => {
+  const options = {
+      body: message.text || message.url,
+      icon: '../favicon.ico'
+  };
+
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  }
+
+  // Let's check whether notification permissions have already been granted
+  else if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification(`Message from ${message.from}`, options);
+  }
+
+  // Otherwise, we need to ask the user for permission
+  else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification(`Message from ${message.from}`, options);
+      }
+    });
+  }
+};
